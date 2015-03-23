@@ -1,0 +1,73 @@
+import java.util.*;
+import java.io.*;
+
+public final class DictionaryWords {
+    
+    public static void main (String[] args){
+        System.out.println("Marks: " + isEnglishLetter("assignment"));
+       
+    }
+
+  /*  
+  * If a dictionary can be used, it can be used in 2 ways.
+  *1.
+  private static final java.util.Set<String> dictionary = new TreeSet<String>();
+    static {
+        dictionary.add("this");
+        dictionary.add("his");
+        dictionary.add("is");
+        dictionary.add("example");
+        dictionary.add("assign");
+        dictionary.add("sign");
+        dictionary.add("ass");
+        dictionary.add("foo");
+        dictionary.add("bar");
+    }*/
+ 
+ /**
+  *2. In the below method,by Dependency Injection, we can use a factory class, where we can 
+  * have methods to have mysampleDictionary, english, dutch etc.
+  * The value for the dictionary will be the one that is being implemented.
+  * **/
+  
+ /*   
+    private final Set<String> dictionary;
+
+    public DictionaryWords(Set<String> dictionary) {
+    this.dictionary = dictionary;
+    }*/
+
+    public static boolean check_for_word(String word) {
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(
+                    "~/Library/Spelling/LocalDictionary"));
+                    System.out.println("found what" + in);
+            String str;
+            while ((str = in.readLine()) != null) {
+                if (str.indexOf(word) != -1) {
+                    return true;
+                }
+            }
+            in.close();
+        } catch (IOException e) {
+            System.out.println("Error is: " + e.getMessage());
+        }
+
+        return false;
+    }
+    
+    public static int isEnglishLetter(String characters) {
+        int mymarks = 0;
+        for (Character c : characters.toCharArray()){
+            if((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')){
+              //  System.out.println("Valid char: " + c);
+                mymarks = mymarks + 1;
+                continue;
+            } else {
+                System.out.println("Invalid char: " + c);
+                return mymarks;
+            }
+        }
+        return mymarks;
+}
+}
