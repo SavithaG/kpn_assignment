@@ -1,0 +1,111 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<artifactId>kpn</artifactId>
+		<groupId>com.kpn.biz</groupId>
+		<version>1.0-rc01-SNAPSHOT</version>
+	</parent>
+
+	<groupId>com.kpn.biz</groupId>
+	<artifactId>kpn-rpm</artifactId>
+	<version>1.0-rc01-SNAPSHOT</version>
+	<packaging>rpm</packaging>
+
+	<name>RPM package</name>
+	<description>Provides a rpm file to deploy in a JBoss instance</description>
+
+	<properties>
+		<configuration.template>default</configuration.template>
+		<configuration.name>kpn</configuration.name>
+		<jboss.home>/opt/jboss/jboss-as</jboss.home>
+		<file.user>jboss</file.user>
+		<file.group>jboss</file.group>
+		<file.mode>664</file.mode>
+	</properties>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/bin</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>rpm-maven-plugin</artifactId>
+				<version>2.1.1</version>
+				<extensions>true</extensions>
+
+				<configuration>
+					<group>Development</group>
+					<description>RPM Packageing</description>
+
+					<needarch>x86_64</needarch>
+
+					<preinstallScriptlet>
+						<scriptFile>${project.build.directory}/classes/preinstall.sh</scriptFile>
+						<fileEncoding>utf-8</fileEncoding>
+					</preinstallScriptlet>
+
+					<mappings>
+						<mapping>
+							<directory>${jboss.home}/server/${configuration.name}/deploy</directory>
+							<filemode>${file.mode}</filemode>
+							<username>${file.user}</username>
+							<groupname>${file.group}</groupname>
+							<directoryIncluded>false</directoryIncluded>
+							<dependency>
+								<includes>
+									<include>com.kpn:KPN-ear</include>
+								</includes>
+							</dependency>
+						</mapping>
+
+						<mapping>
+							<directory>${jboss.home}/server/${configuration.name}/deploy</directory>
+							<filemode>${file.mode}</filemode>
+							<username>${file.user}</username>
+							<groupname>${file.group}</groupname>
+							<directoryIncluded>false</directoryIncluded>
+							<configuration>noreplace</configuration>
+							<sources>
+								<source>
+									<location>src/main/resources</location>
+								</source>
+							</sources>
+						</mapping>
+
+						<mapping>
+							<directory>${jboss.home}/server/${configuration.name}/deployers/ejb3.deployer/META-INF</directory>
+							<filemode>${file.mode}</filemode>
+							<username>${file.user}</username>
+							<groupname>${file.group}</groupname>
+							<directoryIncluded>false</directoryIncluded>
+							<configuration>noreplace</configuration>
+						</mapping>
+
+				<mapping>
+					<directory>${jboss.home}/server/${configuration.name}/lib</directory>
+							<filemode>${file.mode}</filemode>
+							<username>${file.user}</username>
+							<groupname>${file.group}</groupname>
+							<directoryIncluded>false</directoryIncluded>
+				</mapping>
+					</mappings>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.kpn</groupId>
+			<artifactId>KPN-ear</artifactId>
+			<type>ear</type>
+		</dependency>
+
+			</dependencies>
+</project>
